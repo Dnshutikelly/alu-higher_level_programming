@@ -1,12 +1,15 @@
 #!/usr/bin/python3
-""""List inheritance"""
-
+"""
+A class that inherits from list and adds a method to print the list sorted.
+"""
 
 class MyList(list):
-    """Class MyList inherits list."""
+    """Class MyList that extends list and adds a print_sorted method."""
+    
+    def __str__(self):
+        """Return the string representation of the list."""
+        return super().__str__()
 
     def print_sorted(self):
-        """Prints sorted lists."""
-        temp_list = self[:]
-        temp_list.sort()
-        print("{}".format(temp_list))
+        """Print the list sorted in ascending order."""
+        print(sorted(self))  # Using sorted() to print a new sorted list
