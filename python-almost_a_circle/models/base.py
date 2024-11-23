@@ -8,7 +8,7 @@ import turtle
 class Base:
     """Represent the base model.
 
-    Represents the "base" for all other classes in project 0x0C*.
+    Represents the "base" for all other classes in the project.
 
     Attributes:
         __nb_objects (int): The number of instantiated Bases.
@@ -37,15 +37,6 @@ class Base:
             return "[]"
         return json.dumps(list_dictionaries)
 
-    @staticmethod
-    def from_json_string(json_string):
-        """
-        Return the list of the JSON string representation.
-        """
-        if json_string is None or json_string == "[]":
-            return []
-        return json.loads(json_string)
-
     @classmethod
     def save_to_file(cls, list_objs):
         """
@@ -59,30 +50,24 @@ class Base:
                 list_dicts = [o.to_dictionary() for o in list_objs]
                 jsonfile.write(Base.to_json_string(list_dicts))
 
+    @staticmethod
+    def from_json_string(json_string):
+        """
+        Return the list of objects represented by a JSON string.
+        """
+        if json_string == "[]" or json_string is None:
+            return []
+        return json.loads(json_string)
+
     @classmethod
     def load_from_file(cls):
         """
         Return a list of instances from a JSON file.
         """
-        filename = cls.__name__ + ".json"
         try:
-            with open(filename, "r") as jsonfile:
-                list_dicts = cls.from_json_string(jsonfile.read())
-                return [cls.create(**dic) for dic in list_dicts]
+            with open(cls.__name__ + ".json", "r") as jsonfile:
+                obj_list = cls.from_json_string(jsonfile.read())
+                return [cls(**obj) for obj in obj_list]
         except FileNotFoundError:
             return []
-
-    @classmethod
-    def create(cls, **dictionary):
-        """
-        Create an instance with all attributes already set.
-        """
-        if cls.__name__ == "Rectangle":
-            from models.rectangle import Rectangle
-            obj = Rectangle(1, 1)  # Default values to avoid validation issues
-        elif cls.__name__ == "Square":
-            from models.square import Square
-            obj = Square(1)  # Default values to avoid validation issues
-        obj.update(**dictionary)
-        return obj
 
