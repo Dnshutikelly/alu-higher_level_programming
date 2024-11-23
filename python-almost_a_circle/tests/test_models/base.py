@@ -3,7 +3,6 @@
 
 import os
 import unittest
-
 from models.base import Base
 from models.rectangle import Rectangle
 from models.square import Square
@@ -42,42 +41,42 @@ class TestBase(unittest.TestCase):
 
     def test_save_to_file(self):
         """Test saving objects to JSON file"""
+        # Reset the object count before each test
         Base._Base__nb_objects = 0
 
+        # Testing with Square class
         Square.save_to_file(None)
-
         self.assertTrue(os.path.isfile("Square.json"))
-
         with open("Square.json") as file:
             self.assertEqual(file.read(), '[]')
 
         Square.save_to_file([])
         with open("Square.json") as file:
             self.assertEqual(file.read(), '[]')
-            self.assertIsInstance(file.read(), str)
 
         Square.save_to_file([Square(1)])
         with open("Square.json") as file:
             self.assertEqual(file.read(),
                              '[{"id": 1, "size": 1, "x": 0, "y": 0}]')
+
+        # Reset object count again
         Base._Base__nb_objects = 0
 
+        # Testing with Rectangle class
         Rectangle.save_to_file(None)
         self.assertTrue(os.path.isfile("Rectangle.json"))
-        
         with open("Rectangle.json") as file:
             self.assertEqual(file.read(), '[]')
 
         Rectangle.save_to_file([])
         with open("Rectangle.json") as file:
             self.assertEqual(file.read(), '[]')
-            self.assertIsInstance(file.read(), str)
 
         Rectangle.save_to_file([Rectangle(1, 2)])
         with open("Rectangle.json") as file:
             self.assertEqual(file.read(),
-                             '[{"id": 1, "width": 1, '
-                             '"height": 2, "x": 0, "y": 0}]')
+                             '[{"id": 1, "width": 1, "height": 2, "x": 0, "y": 0}]')
+
     @classmethod
     def tearDownClass(cls):
         """End of test output"""
@@ -88,5 +87,7 @@ class TestBase(unittest.TestCase):
             except IOError:
                 pass
         print("Completed test")
+
 if __name__ == '__main__':
     unittest.main()
+
