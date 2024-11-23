@@ -77,8 +77,27 @@ class Rectangle(Base):
         """Return the string representation of the rectangle"""
         return f"[Rectangle] ({self.id}) {self.x}/{self.y} - {self.width}/{self.height}"
 
+    def area(self):
+        """Returns the area of the rectangle"""
+        return self.width * self.height
+
+    def display(self):
+        """Displays the rectangle with `#`"""
+        for i in range(self.height):
+            print(f"{' ' * self.x}{'#' * self.width}")
+
+    def to_dictionary(self):
+        """Returns the dictionary representation of the Rectangle object"""
+        return {
+            "id": self.id,
+            "width": self.width,
+            "height": self.height,
+            "x": self.x,
+            "y": self.y
+        }
+
     def update(self, *args, **kwargs):
-        """Updates the values of Rectangle attributes"""
+        """Updates the values of Rectangle object attributes"""
         attributes = ['id', 'width', 'height', 'x', 'y']
         if args:
             for i, arg in enumerate(args):
@@ -94,13 +113,29 @@ class Rectangle(Base):
                     if key in attributes:
                         setattr(self, key, value)
 
-    def to_dictionary(self):
-        """Returns the dictionary representation of the rectangle"""
-        return {
-            "id": self.id,
-            "width": self.width,
-            "height": self.height,
-            "x": self.x,
-            "y": self.y
-        }
+    @classmethod
+    def create(cls, **dictionary):
+        """Creates a new Rectangle instance from a dictionary"""
+        return cls(**dictionary)
+
+    @classmethod
+    def save_to_file(cls, list_objs):
+        """Write the JSON serialization of a list of objects to a file."""
+        filename = cls.__name__ + ".json"
+        with open(filename, "w") as jsonfile:
+            if list_objs is None:
+                jsonfile.write("[]")
+            else:
+                list_dicts = [o.to_dictionary() for o in list_objs]
+                jsonfile.write(Base.to_json_string(list_dicts))
+
+    @classmethod
+    def load_from_file(cls):
+        """Load a list of objects from a file."""
+        try:
+            with open(cls.__name__ + ".json", "r") as jsonfile:
+                obj_list = cls.from_json_string(jsonfile.read())
+                return [cls(**obj) for obj in obj_list]
+        except FileNotFoundError:
+            return []
 
