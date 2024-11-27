@@ -10,7 +10,6 @@ class Rectangle(Base):
     """Class Rectangle"""
 
     def __init__(self, width, height, x=0, y=0, id=None):
-        """Initializes a new Rectangle object."""
         self.width = width
         self.height = height
         self.x = x
@@ -48,7 +47,7 @@ class Rectangle(Base):
 
     @height.setter
     def height(self, value):
-        """Sets the value for height"""
+        """Sets the value for heigth"""
         if not isinstance(value, int):
             raise TypeError("height must be an integer")
         if value <= 0:
@@ -73,21 +72,37 @@ class Rectangle(Base):
             raise ValueError("y must be >= 0")
         self.__y = value
 
-    def __str__(self):
-        """Return the string representation of the rectangle"""
-        return f"[Rectangle] ({self.id}) {self.x}/{self.y} - {self.width}/{self.height}"
-
     def area(self):
-        """Returns the area of the rectangle"""
+        """Returns the area value of the Rectangle instance."""
         return self.width * self.height
 
     def display(self):
-        """Displays the rectangle with `#`"""
-        for i in range(self.height):
-            print(f"{' ' * self.x}{'#' * self.width}")
+        """Prints in stdout the Rectangle instance with the character #"""
+        for row in range(self.y):
+            print("")
+        for row in range(self.height):
+            print((" " * self.x) + ("#" * self.width))
+
+    def update(self, *args, **kwargs):
+        """Assigns an argument to each attribute:"""
+        if args:
+            attributes = ['id', 'width', 'height', 'x', 'y']
+            for i, arg in enumerate(args):
+                if i == 0 and arg is None:
+                    self.__init__(self.width, self.height, self.x, self.y)
+                else:
+                    setattr(self, attributes[i], arg)
+        elif kwargs:
+            for key, value in kwargs.items():
+                attributes = ['id', 'width', 'height', 'x', 'y']
+                if key == "id" and value is None:
+                    self.__init__(self.width, self.height, self.x, self.y)
+                else:
+                    if key in attributes:
+                        setattr(self, key, value)
 
     def to_dictionary(self):
-        """Returns the dictionary representation of the Rectangle object"""
+        """Returns the dictionary representation of a Rectangle object."""
         return {
             "id": self.id,
             "width": self.width,
@@ -96,46 +111,7 @@ class Rectangle(Base):
             "y": self.y
         }
 
-    def update(self, *args, **kwargs):
-        """Updates the values of Rectangle object attributes"""
-        attributes = ['id', 'width', 'height', 'x', 'y']
-        if args:
-            for i, arg in enumerate(args):
-                if i == 0 and arg is None:
-                    self.__init__(self.width, self.height, self.x, self.y)
-                else:
-                    setattr(self, attributes[i], arg)
-        elif kwargs:
-            for key, value in kwargs.items():
-                if key == "id" and value is None:
-                    self.__init__(self.width, self.height, self.x, self.y)
-                else:
-                    if key in attributes:
-                        setattr(self, key, value)
-
-    @classmethod
-    def create(cls, **dictionary):
-        """Creates a new Rectangle instance from a dictionary"""
-        return cls(**dictionary)
-
-    @classmethod
-    def save_to_file(cls, list_objs):
-        """Write the JSON serialization of a list of objects to a file."""
-        filename = cls.__name__ + ".json"
-        with open(filename, "w") as jsonfile:
-            if list_objs is None:
-                jsonfile.write("[]")
-            else:
-                list_dicts = [o.to_dictionary() for o in list_objs]
-                jsonfile.write(Base.to_json_string(list_dicts))
-
-    @classmethod
-    def load_from_file(cls):
-        """Load a list of objects from a file."""
-        try:
-            with open(cls.__name__ + ".json", "r") as jsonfile:
-                obj_list = cls.from_json_string(jsonfile.read())
-                return [cls(**obj) for obj in obj_list]
-        except FileNotFoundError:
-            return []
-
+    def __str__(self):
+        """String representation of a rectangle instance"""
+        return f"[Rectangle] ({self.id}) {self.__x}/{self.__y} - \
+{self.__width}/{self.__height}"
